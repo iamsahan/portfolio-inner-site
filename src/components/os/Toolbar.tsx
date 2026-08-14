@@ -1,21 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Colors from '../../constants/colors';
 import { Icon } from '../general';
-// import { } from '../general';
-// import Home from '../site/Home';
-// import Window from './Window';
+import { DesktopShortcutProps } from './DesktopShortcut';
+import { t, LanguageCode } from '../../constants/i18n';
+import { useSettings } from '../../hooks/useSettings';
 
 export interface ToolbarProps {
     windows: DesktopWindows;
     toggleMinimize: (key: string) => void;
     shutdown: () => void;
+    apps: DesktopShortcutProps[];
+    language: LanguageCode;
 }
+
+const PINNED_APP_NAMES = ['GitHub', 'LinkedIn', 'Code', 'Browser'];
 
 const Toolbar: React.FC<ToolbarProps> = ({
     windows,
     toggleMinimize,
     shutdown,
+    apps,
+    language,
 }) => {
+    const { soundOn, setSoundOn } = useSettings();
     const getTime = () => {
         const date = new Date();
         let hours = date.getHours();
@@ -87,33 +94,83 @@ const Toolbar: React.FC<ToolbarProps> = ({
         }
     };
 
+    const closeStart = () => {
+        setStartWindowOpen(false);
+        lastClickInside.current = false;
+    };
+
+    const openApp = (
+        event: React.MouseEvent,
+        app: DesktopShortcutProps
+    ) => {
+        event.stopPropagation();
+        app.onOpen();
+        closeStart();
+    };
+
+    const onShutdownClicked = (event: React.MouseEvent) => {
+        event.stopPropagation();
+        shutdown();
+    };
+
+    const pinnedApps = apps.filter((app) =>
+        PINNED_APP_NAMES.includes(app.shortcutName)
+    );
+
+    const onQuickLaunchClicked = (
+        event: React.MouseEvent,
+        app: DesktopShortcutProps
+    ) => {
+        event.stopPropagation();
+        app.onOpen();
+    };
+
     return (
         <div style={styles.toolbarOuter}>
             {startWindowOpen && (
-                <div
-                    onMouseDown={onStartWindowClicked}
-                    style={styles.startWindow}
-                >
-                    <div style={styles.startWindowInner}>
-                        <div style={styles.verticalStartContainer}>
-                            <p style={styles.verticalText}>HeffernanOS</p>
-                        </div>
-                        <div style={styles.startWindowContent}>
-                            <div style={styles.startMenuSpace} />
-                            <div style={styles.startMenuLine} />
+                <div onMouseDown={onStartWindowClicked} style={styles.startScreen}>
+                    <div style={styles.startHeader}>
+                        <p style={styles.startTitle}>{t(language, 'start')}</p>
+                        <p style={styles.startSubtitle}>
+                            {t(language, 'welcome')}
+                        </p>
+                    </div>
+                    <div style={styles.tileGrid}>
+                        {apps.map((app) => (
                             <div
-                                className="start-menu-option"
-                                style={styles.startMenuOption}
-                                onMouseDown={shutdown}
+                                key={app.shortcutName}
+                                className="start-tile"
+                                style={Object.assign({}, styles.tile, {
+                                    backgroundColor:
+                                        app.tileColor || Colors.tileBlue,
+                                })}
+                                onMouseDown={(e) => openApp(e, app)}
                             >
                                 <Icon
-                                    style={styles.startMenuIcon}
-                                    icon="computerBig"
+                                    icon={app.icon}
+                                    style={styles.tileIcon}
+                                    size={40}
                                 />
-                                <p style={styles.startMenuText}>
-                                    Sh<u>u</u>t down...
+                                <p style={styles.tileLabel}>
+                                    {app.shortcutName}
                                 </p>
                             </div>
+                        ))}
+                        <div
+                            className="start-tile"
+                            style={Object.assign({}, styles.tile, {
+                                backgroundColor: Colors.darkGray,
+                            })}
+                            onMouseDown={onShutdownClicked}
+                        >
+                            <Icon
+                                icon="computerBig"
+                                style={styles.tileIcon}
+                                size={40}
+                            />
+                            <p style={styles.tileLabel}>
+                                {t(language, 'shutDown')}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -128,13 +185,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
                         )}
                         onMouseDown={toggleStartWindow}
                     >
-                        <div
-                            style={Object.assign(
-                                {},
-                                styles.startContainer,
-                                startWindowOpen && styles.activeTabInner
-                            )}
-                        >
+                        <div style={styles.startContainer}>
                             <Icon
                                 size={18}
                                 icon="windowsStartIcon"
@@ -142,6 +193,24 @@ const Toolbar: React.FC<ToolbarProps> = ({
                             />
                             <p className="toolbar-text ">Start</p>
                         </div>
+                    </div>
+                    <div style={styles.quickLaunch}>
+                        {pinnedApps.map((app) => (
+                            <div
+                                key={app.shortcutName}
+                                style={styles.quickLaunchButton}
+                                onMouseDown={(e) =>
+                                    onQuickLaunchClicked(e, app)
+                                }
+                                title={app.shortcutName}
+                            >
+                                <Icon
+                                    size={20}
+                                    icon={app.icon}
+                                    style={styles.quickLaunchIcon}
+                                />
+                            </div>
+                        ))}
                     </div>
                     <div style={styles.toolbarTabsContainer}>
                         {Object.keys(windows).map((key) => {
@@ -157,15 +226,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
                                     )}
                                     onMouseDown={() => toggleMinimize(key)}
                                 >
-                                    <div
-                                        style={Object.assign(
-                                            {},
-                                            styles.tabContainer,
-                                            lastActive === key &&
-                                                !windows[key].minimized &&
-                                                styles.activeTabInner
-                                        )}
-                                    >
+                                    <div style={styles.tabContainer}>
                                         <Icon
                                             size={18}
                                             icon={windows[key].icon}
@@ -181,7 +242,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
                     </div>
                 </div>
                 <div style={styles.time}>
-                    <Icon style={styles.volumeIcon} icon="volumeOn" />
+                    <div onMouseDown={() => setSoundOn(!soundOn)}>
+                        <Icon
+                            style={styles.volumeIcon}
+                            icon={soundOn ? 'volumeOn' : 'volumeOff'}
+                        />
+                    </div>
                     <p style={styles.timeText}>{time}</p>
                 </div>
             </div>
@@ -195,186 +261,166 @@ const styles: StyleSheetCSS = {
         position: 'absolute',
         bottom: 0,
         width: '100%',
-        height: 32,
-        background: Colors.lightGray,
-        borderTop: `1px solid ${Colors.lightGray}`,
+        height: 40,
+        background: Colors.navy,
         zIndex: 100000,
     },
-    verticalStartContainer: {
-        // width: 30,
-        height: '100%',
-        background: Colors.darkGray,
-    },
-    verticalText: {
-        fontFamily: 'Terminal',
-        textOrientation: 'sideways',
-        fontSize: 32,
-        padding: 4,
-        paddingBottom: 64,
-        paddingTop: 8,
-        letterSpacing: 1,
-        color: Colors.lightGray,
-        transform: 'scale(-1)',
-        WebkitTransform: 'scale(-1)',
-        MozTransform: 'scale(-1)',
-        msTransform: 'scale(-1)',
-        OTransform: 'scale(-1)',
-        // @ts-ignore
-        writingMode: 'tb-rl',
-    },
-    startWindowContent: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        // alignItems: 'flex-end',
-    },
-    startWindow: {
-        position: 'absolute',
-        bottom: 28,
+    startScreen: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 40,
         display: 'flex',
-        flex: 1,
-        width: 256,
-        // height: 400,
-        left: 4,
+        flexDirection: 'column',
         boxSizing: 'border-box',
-        border: `1px solid ${Colors.white}`,
-        borderBottomColor: Colors.black,
-        borderRightColor: Colors.black,
-        background: Colors.lightGray,
+        padding: '48px 56px',
+        background: `linear-gradient(135deg, ${Colors.navy} 0%, ${Colors.navyDark} 100%)`,
+        overflowY: 'auto',
+        zIndex: 200000,
+    },
+    startHeader: {
+        flexDirection: 'column',
+        marginBottom: 40,
+    },
+    startTitle: {
+        fontFamily: 'Terminal',
+        fontSize: 56,
+        color: Colors.white,
+        letterSpacing: 1,
+        margin: 0,
+    },
+    startSubtitle: {
+        fontFamily: 'MSSerif',
+        fontSize: 14,
+        color: Colors.lightGray,
+        marginTop: 8,
+    },
+    tileGrid: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignContent: 'flex-start',
+        gap: 16,
+    },
+    tile: {
+        width: 140,
+        height: 140,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        cursor: 'pointer',
+        padding: 12,
+        boxSizing: 'border-box',
+        color: Colors.white,
+        transition: 'transform 0.1s ease, filter 0.1s ease',
+    },
+    tileIcon: {
+        alignSelf: 'flex-start',
+    },
+    tileLabel: {
+        fontFamily: 'MSSerif',
+        fontSize: 13,
+        color: Colors.white,
+        margin: 0,
     },
     activeTabOuter: {
-        border: `1px solid ${Colors.black}`,
-        borderBottomColor: Colors.white,
-        borderRightColor: Colors.white,
-    },
-    startWindowInner: {
-        border: `1px solid ${Colors.lightGray}`,
-        borderBottomColor: Colors.darkGray,
-        borderRightColor: Colors.darkGray,
-        flex: 1,
+        outline: `2px solid ${Colors.white}`,
+        outlineOffset: -2,
     },
     startMenuIcon: {
         width: 32,
         height: 32,
     },
-    startMenuText: {
-        fontSize: 14,
-        fontFamily: 'MSSerif',
-        marginLeft: 8,
-    },
-    startMenuOption: {
-        alignItems: 'center',
-        // flex: 1,
-        height: 24,
-        padding: 12,
-    },
-    startMenuSpace: {
-        flex: 1,
-    },
-    startMenuLine: {
-        height: 1,
-        background: Colors.white,
-        borderTop: `1px solid ${Colors.darkGray}`,
-    },
-    activeTabInner: {
-        border: `1px solid ${Colors.darkGray}`,
-        borderBottomColor: Colors.lightGray,
-        borderRightColor: Colors.lightGray,
-        backgroundImage: `linear-gradient(45deg, white 25%, transparent 25%),
-        linear-gradient(-45deg,  white 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%,  white 75%),
-        linear-gradient(-45deg, transparent 75%,  white 75%)`,
-        backgroundSize: `4px 4px`,
-        backgroundPosition: `0 0, 0 2px, 2px -2px, -2px 0px`,
-        pointerEvents: 'none',
-    },
     tabContainerOuter: {
         display: 'flex',
         flex: 1,
-        maxWidth: 300,
-        marginRight: 4,
+        maxWidth: 260,
+        marginRight: 2,
         boxSizing: 'border-box',
         cursor: 'pointer',
-        border: `1px solid ${Colors.white}`,
-        borderBottomColor: Colors.black,
-        borderRightColor: Colors.black,
+        background: Colors.navyDark,
     },
     tabContainer: {
         display: 'flex',
-        border: `1px solid ${Colors.lightGray}`,
-        borderBottomColor: Colors.darkGray,
-        borderRightColor: Colors.darkGray,
         alignItems: 'center',
-        paddingLeft: 4,
+        paddingLeft: 8,
+        paddingRight: 8,
+        height: 40,
         flex: 1,
     },
     tabIcon: {
-        marginRight: 6,
+        marginRight: 8,
     },
     startContainer: {
         alignItems: 'center',
         flexShrink: 1,
-        // background: 'red',
-        border: `1px solid ${Colors.lightGray}`,
-        borderBottomColor: Colors.darkGray,
-        borderRightColor: Colors.darkGray,
-        padding: 1,
-        paddingLeft: 5,
-        paddingRight: 5,
+        padding: 8,
+        paddingLeft: 12,
+        paddingRight: 12,
     },
     startContainerOuter: {
-        marginLeft: 3,
         boxSizing: 'border-box',
         cursor: 'pointer',
-        border: `1px solid ${Colors.white}`,
-        borderBottomColor: Colors.black,
-        borderRightColor: Colors.black,
+        background: Colors.accent,
     },
     toolbarTabsContainer: {
-        // background: 'blue',
         flex: 1,
-        marginLeft: 4,
-        marginRight: 4,
+        marginLeft: 2,
+    },
+    quickLaunch: {
+        alignItems: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
+        borderRight: `1px solid ${Colors.navyDark}`,
+    },
+    quickLaunchButton: {
+        width: 32,
+        height: 32,
+        justifyContent: 'center',
+        alignItems: 'center',
+        cursor: 'pointer',
+        marginRight: 10,
+    },
+    quickLaunchIcon: {
+        pointerEvents: 'none',
     },
     startIcon: {
-        marginRight: 4,
+        marginRight: 6,
     },
     toolbarInner: {
-        borderTop: `1px solid ${Colors.white}`,
-
         alignItems: 'center',
         flex: 1,
+        height: '100%',
     },
     toolbar: {
         flexGrow: 1,
-        width: '100%',
+        height: '100%',
+        alignItems: 'stretch',
     },
     time: {
         flexShrink: 1,
-        width: 86,
-        height: 24,
+        width: 96,
+        height: '100%',
         boxSizing: 'border-box',
-        marginRight: 4,
-        paddingLeft: 4,
-        paddingRight: 4,
-        border: `1px solid ${Colors.white}`,
-        borderTopColor: Colors.darkGray,
-
+        paddingLeft: 8,
+        paddingRight: 8,
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderLeftColor: Colors.darkGray,
+        background: Colors.navyDark,
     },
     volumeIcon: {
         cursor: 'pointer',
         height: 18,
+        filter: 'invert(1)',
     },
     tabText: {
-        fontSize: 14,
+        fontSize: 13,
         fontFamily: 'MSSerif',
+        color: Colors.white,
     },
     timeText: {
         fontSize: 12,
         fontFamily: 'MSSerif',
+        color: Colors.white,
     },
 };
 

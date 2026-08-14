@@ -7,6 +7,7 @@ export interface DesktopShortcutProps {
     icon: IconName;
     shortcutName: string;
     invertText?: boolean;
+    tileColor?: string;
     onOpen: () => void;
 }
 
@@ -108,7 +109,7 @@ const DesktopShortcut: React.FC<DesktopShortcutProps> = ({
                         }
                     )}
                 />
-                <Icon icon={icon} style={styles.icon} />
+                <Icon icon={icon} style={styles.icon} size={32} />
             </div>
             <div
                 className={

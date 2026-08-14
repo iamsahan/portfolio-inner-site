@@ -12,11 +12,11 @@ const HenordleApp: React.FC<HenordleAppProps> = (props) => {
             width={600}
             height={860}
             windowBarIcon="windowGameIcon"
-            windowTitle="Henordle"
+            windowTitle="Wordle Clone"
             closeWindow={props.onClose}
             onInteract={props.onInteract}
             minimizeWindow={props.onMinimize}
-            bottomLeftText={'© Copyright 2022 Henry Heffernan'}
+            bottomLeftText={'© Copyright 2026 Alex Rivera'}
         >
             <div className="site-page">
                 <Wordle />

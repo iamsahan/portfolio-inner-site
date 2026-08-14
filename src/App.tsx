@@ -1,10 +1,13 @@
 import './App.css';
 import Desktop from './components/os/Desktop';
+import { SettingsProvider } from './hooks/useSettings';
 
 function App() {
     return (
         <div className="App">
-            <Desktop />
+            <SettingsProvider>
+                <Desktop />
+            </SettingsProvider>
         </div>
     );
 }

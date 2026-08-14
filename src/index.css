@@ -400,3 +400,16 @@ input:active {
     cursor: pointer;
     color: white;
 }
+
+.start-tile {
+    filter: brightness(1);
+}
+
+.start-tile:hover {
+    filter: brightness(1.15);
+}
+
+.start-tile:active {
+    filter: brightness(0.85);
+    transform: scale(0.97);
+}

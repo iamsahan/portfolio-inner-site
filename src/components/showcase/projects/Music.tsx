@@ -64,7 +64,7 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <MusicPlayer
                 src={house}
                 title="Timeless"
-                subtitle="Henry Heffernan - 2022"
+                subtitle="Alex Rivera - 2026"
                 currentSong={currentSong}
                 setCurrentSong={setCurrentSong}
             />
@@ -112,7 +112,7 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <MusicPlayer
                 src={edge}
                 title="Edge [W.I.P.]"
-                subtitle="Henry Heffernan - 2021"
+                subtitle="Alex Rivera - 2025"
                 currentSong={currentSong}
                 setCurrentSong={setCurrentSong}
             />
@@ -150,7 +150,7 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <MusicPlayer
                 src={dnb}
                 title="Break [Demo]"
-                subtitle="Henry Heffernan - 2019/2022"
+                subtitle="Alex Rivera - 2019/2026"
                 currentSong={currentSong}
                 setCurrentSong={setCurrentSong}
             />
@@ -168,7 +168,7 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <MusicPlayer
                 src={dnbDrums}
                 title="Break [Drums and Sub]"
-                subtitle="Henry Heffernan - 2019/2022"
+                subtitle="Alex Rivera - 2019/2026"
                 currentSong={currentSong}
                 setCurrentSong={setCurrentSong}
             />

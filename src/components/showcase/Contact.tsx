@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../../constants/colors';
 import twitterIcon from '../../assets/pictures/contact-twitter.png';
 import ghIcon from '../../assets/pictures/contact-gh.png';
@@ -54,50 +54,19 @@ const Contact: React.FC<ContactProps> = (props) => {
             setFormMessageColor('red');
             return;
         }
-        try {
-            setIsLoading(true);
-            const res = await fetch(
-                'https://api.henryheffernan.com/api/contact',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        company,
-                        email,
-                        name,
-                        message,
-                    }),
-                }
-            );
-            // the response will be either {success: true} or {success: false, error: message}
-            const data = (await res.json()) as
-                | {
-                      success: false;
-                      error: string;
-                  }
-                | { success: true };
-            if (data.success) {
-                setFormMessage(`Message successfully sent. Thank you ${name}!`);
-                setCompany('');
-                setEmail('');
-                setName('');
-                setMessage('');
-                setFormMessageColor(colors.blue);
-                setIsLoading(false);
-            } else {
-                setFormMessage(data.error);
-                setFormMessageColor(colors.red);
-                setIsLoading(false);
-            }
-        } catch (e) {
+        // TODO: wire this up to your own contact API endpoint.
+        setIsLoading(true);
+        setTimeout(() => {
             setFormMessage(
-                'There was an error sending your message. Please try again.'
+                `Message not actually sent — hook up a contact endpoint. Thanks ${name}!`
             );
-            setFormMessageColor(colors.red);
+            setCompany('');
+            setEmail('');
+            setName('');
+            setMessage('');
+            setFormMessageColor(colors.blue);
             setIsLoading(false);
-        }
+        }, 600);
     }
 
     useEffect(() => {
@@ -116,15 +85,15 @@ const Contact: React.FC<ContactProps> = (props) => {
                 <div style={styles.socials}>
                     <SocialBox
                         icon={ghIcon}
-                        link={'https://github.com/henryjeff'}
+                        link={'https://github.com/example'}
                     />
                     <SocialBox
                         icon={inIcon}
-                        link={'https://www.linkedin.com/in/henryheffernan/'}
+                        link={'https://www.linkedin.com/in/example/'}
                     />
                     <SocialBox
                         icon={twitterIcon}
-                        link={'https://twitter.com/henryheffernan'}
+                        link={'https://twitter.com/example'}
                     />
                 </div>
             </div>
@@ -138,8 +107,8 @@ const Contact: React.FC<ContactProps> = (props) => {
                 <br />
                 <p>
                     <b>Email: </b>
-                    <a href="mailto:henryheffernan@gmail.com">
-                        henryheffernan@gmail.com
+                    <a href="mailto:alex.rivera@example.com">
+                        alex.rivera@example.com
                     </a>
                 </p>
 

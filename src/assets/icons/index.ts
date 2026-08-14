@@ -18,6 +18,9 @@ import windowExplorerIcon from './windowExplorerIcon.png';
 import windowsStartIcon from './windowsStartIcon.png';
 import scrabbleIcon from './scrabbleIcon.png';
 import close from './close.png';
+import githubIcon from './githubIcon.png';
+import linkedinIcon from './linkedinIcon.png';
+import forward from './forward.png';
 
 const icons = {
     windowResize: windowResize,
@@ -38,6 +41,9 @@ const icons = {
     windowExplorerIcon: windowExplorerIcon,
     windowsStartIcon: windowsStartIcon,
     trailIcon: trailIcon,
+    githubIcon: githubIcon,
+    linkedinIcon: linkedinIcon,
+    forward: forward,
 };
 
 export type IconName = keyof typeof icons;

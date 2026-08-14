@@ -12,13 +12,14 @@ const About: React.FC<AboutProps> = (props) => {
         <div className="site-page-content">
             {/* <img src={me} style={styles.topImage} alt="" /> */}
             <h1 style={{ marginLeft: -16 }}>Welcome</h1>
-            <h3>I'm Henry Heffernan</h3>
+            <h3>I'm Alex Rivera</h3>
             <br />
             <div className="text-block">
                 <p>
-                    I'm a software engineer currently working at Vercel! In May
-                    of 2022 I graduated from Rensselaer Polytechnic Institute
-                    with my BS in Computer Science.
+                    I'm a software engineer with a passion for building
+                    delightful products. I graduated with a BS in Computer
+                    Science and have been writing software professionally
+                    ever since.
                 </p>
                 <br />
                 <p>
@@ -27,8 +28,8 @@ const About: React.FC<AboutProps> = (props) => {
                     building it. If you have any questions or comments, feel
                     free to contact me using{' '}
                     <Link to="/contact">this form</Link> or shoot me an email at{' '}
-                    <a href="mailto:henryheffernan@gmail.com">
-                        henryheffernan@gmail.com
+                    <a href="mailto:alex.rivera@example.com">
+                        alex.rivera@example.com
                     </a>
                 </p>
             </div>
@@ -37,53 +38,34 @@ const About: React.FC<AboutProps> = (props) => {
                 <h3>About Me</h3>
                 <br />
                 <p>
-                    From a young age, I have had a curiosity about how things
-                    worked. This naturally led me to become absolutely obsessed
-                    with Lego and I fell in love with building things. In
-                    elementary school, I joined the Lego Robotics team at my
-                    local middle school, which was my first real exposure to
-                    programming. In 2008, my family and I moved across the
-                    country from California to New York, where I attended middle
-                    school, high school, and college.
+                    From a young age, I've had a curiosity about how things
+                    work. That curiosity naturally led me toward building
+                    things, and eventually toward programming. This is
+                    placeholder bio text — swap it out with your own story.
                 </p>
                 <br />
                 <div className="captioned-image">
                     <img src={me} style={styles.image} alt="" />
                     <p>
                         <sub>
-                            <b>Figure 1:</b> A real photo of me developing this
-                            website :)
+                            <b>Figure 1:</b> Placeholder photo — replace with
+                            your own.
                         </sub>
                     </p>
                 </div>
 
                 <p>
-                    I started programming more seriously in high school,
-                    initially learning how to scrape and interact with websites.
-                    I went on to do a ton of passion projects, many of them with
-                    one of my closest friends,{' '}
-                    <a
-                        rel="noreferrer"
-                        target="_blank"
-                        href="https://www.linkedin.com/in/scott-bass-189a7919b/"
-                    >
-                        Scott Bass
-                    </a>
-                    . We worked on many projects together, including chat bots,
-                    multiple game projects, apps, and more. One of these
-                    projects is viewable on my{' '}
+                    I started programming more seriously in school, working on
+                    a handful of passion projects along the way. Some of these
+                    are viewable on my{' '}
                     <Link to="/projects/software">Software Projects</Link> page.
                 </p>
                 <br />
                 <p>
-                    In 2017, I got accepted into Rennselear Polytechnic
-                    Institute to study Computer Science. It was my first choice
-                    and I was absolutely ecstatic to be going to such a great
-                    university. At the end of my sophomore year, I got an
-                    internship working for the startup Hover, primarily focusing
-                    on frontend work. I continued to work at Hover on and off
-                    for about a year and a half, until the start of my senior
-                    year when I decided to focus on other opportunities.
+                    This is dummy placeholder text describing your education
+                    and early work experience. Replace it with details about
+                    where you studied and how you got your start in the
+                    industry.
                 </p>
                 <br />
                 <br />
@@ -112,17 +94,16 @@ const About: React.FC<AboutProps> = (props) => {
                         </p>
                         <br />
                         <p>
-                            In college, I was an active member in the fraternity
-                            Sigma Alpha Epsilon and held multiple positions in
-                            the chapter. I met a lot of amazing people through
-                            my fraternity and thoroughly enjoyed the community.
+                            This paragraph is a placeholder for anything else
+                            you'd like to share about your background or
+                            community involvement.
                         </p>
                     </div>
                     <div style={styles.verticalImage}>
                         <img src={meNow} style={styles.image} alt="" />
                         <p>
                             <sub>
-                                <b>Figure 2:</b> Me, April 2022
+                                <b>Figure 2:</b> Placeholder photo
                             </sub>
                         </p>
                     </div>
@@ -137,9 +118,9 @@ const About: React.FC<AboutProps> = (props) => {
                     <a
                         rel="noreferrer"
                         target="_blank"
-                        href="https://twitter.com/henryheffernan"
+                        href="https://twitter.com/example"
                     >
-                        @henryheffernan
+                        @example
                     </a>{' '}
                     Good luck and have fun!
                 </p>
@@ -149,8 +130,8 @@ const About: React.FC<AboutProps> = (props) => {
                     them. You can reach me through the{' '}
                     <Link to="/contact">contact page</Link> or shoot me an email
                     at{' '}
-                    <a href="mailto:henryheffernan@gmail.com">
-                        henryheffernan@gmail.com
+                    <a href="mailto:alex.rivera@example.com">
+                        alex.rivera@example.com
                     </a>
                 </p>
             </div>
